@@ -1,18 +1,13 @@
 "use client";
-
-import Link from "next/link"
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-import { cn } from "@/lib/utils"
 import { Category } from "@/types";
-
+import * as React from "react";
+import Categories from "./categories";
 interface MainNavProps {
   data: Category[];
 }
-
-const MainNav: React.FC<MainNavProps> = ({
-  data
-}) => {
+const MainNav: React.FC<MainNavProps> = ({ data }) => {
   const pathname = usePathname();
 
   const routes = data.map((route) => ({
@@ -21,24 +16,33 @@ const MainNav: React.FC<MainNavProps> = ({
     active: pathname === `/category/${route.id}`,
   }));
 
+  const more = [
+    { href: `/`, label: "Home", active: pathname === `/` },
+    {
+      href: `/contactus`,
+      label: "Contact Us",
+      active: pathname === `/contactus`,
+    },
+    { href: `/aboutus`, label: "About Us", active: pathname === `/aboutus` },
+  ];
+
   return (
-    <nav
-      className="mx-6 flex items-center space-x-4 lg:space-x-6"
-    >
-      {routes.map((route) => (
-        <Link
-          key={route.href}
-          href={route.href}
-          className={cn(
-            'text-sm font-medium transition-colors hover:text-black',
-            route.active ? 'text-black' : 'text-neutral-500'
-          )}
-        >
-          {route.label}
+    <nav className="mx-auto w-max flex items-center sm:space-x-4 lg:space-x-6 font-sans text-sm lg:text-lg font-semibold">
+      <Link href={"/"} className="hidden md:block">
+        Home
       </Link>
-      ))}
+      <Link href={"/contactus"} className="hidden sm:block pl-4">
+        Contact Us
+      </Link>
+      <Link href={"/aboutus"} className="hidden sm:block pl-4">
+        About Us
+      </Link>
+      <Categories routes={routes} title={"Category"} />
+      <div className="sm:hidden">
+        <Categories routes={more} title={"More"} />
+      </div>
     </nav>
-  )
+  );
 };
 
 export default MainNav;
